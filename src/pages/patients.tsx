@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
-import { Plus, Search, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import axios from 'axios';
 import { apiUrl } from '../utils/api';
-// import { normalizeFormData } from '@/utils/normalize';
-
 
 import {
   Select,
@@ -80,36 +78,45 @@ export default function Patients() {
     setDialogOpen(true);
   };
 
-  const handleFormSubmit = async (formData: any) => {
-    console.log('Form Data-------------------:', formData);
-    // const normalizedData = normalizeFormData(formData);
-    //  console.log('Normalized data before sending:', normalizedData);
-    try {
-      if (editingPatient) {
-        const updated = await axios.put(
-          apiUrl(`/patients/${editingPatient.patientId}`),
-          { ...formData, facilityId: "9f24a48c-53d4-4fc2-8c96-2f3ff2a2c556" }
-        );
-        setPatients(prev =>
-          prev.map(p => (p.patientId === editingPatient.patientId ? updated.data : p))
-        );
-        toast({ title: 'Updated', description: 'Patient updated successfully' });
-      } else {
-        const created = await axios.post(
-          apiUrl('/patients'),
-          { ...formData, facilityId: "9f24a48c-53d4-4fc2-8c96-2f3ff2a2c556" }
-        );
-        setPatients(prev => [created.data, ...prev]);
-        toast({ title: 'Created', description: 'New patient added successfully' });
-      }
-    } catch (err) {
-      console.log('Error saving patient:', err);
-      toast({ title: 'Error', description: 'Failed to save patient', variant: 'destructive' });
-    } finally {
-      setDialogOpen(false);
-      setEditingPatient(null);
+ const handleFormSubmit = async (formData: any) => {
+  try {
+    if (editingPatient) {
+      // Update patient
+      await axios.put(
+        apiUrl(`/patients/${editingPatient.patientId}`),
+        formData
+      );
+
+      await fetchPatients(); // ✅ Ensure full fresh data after update
+
+      toast({
+        title: 'Updated',
+        description: 'Patient updated successfully',
+      });
+    } else {
+      // Create new patient
+      await axios.post(apiUrl('/patients'), formData);
+
+      await fetchPatients(); // ✅ Refresh full list after creation
+
+      toast({
+        title: 'Created',
+        description: 'New patient added successfully',
+      });
     }
-  };
+  } catch (err) {
+    console.log('Error saving patient:', err);
+    toast({
+      title: 'Error',
+      description: 'Failed to save patient',
+      variant: 'destructive',
+    });
+  } finally {
+    setDialogOpen(false);
+    setEditingPatient(null);
+  }
+};
+
 
   const filteredPatients = React.useMemo(() => {
     return patients.filter((patient) => {
@@ -162,7 +169,7 @@ export default function Patients() {
         </Dialog>
       </div>
 
-      {/* Filter Inputs */}
+      {/* Filters */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />

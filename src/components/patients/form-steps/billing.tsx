@@ -19,24 +19,25 @@ import {
 
 export function BillingStep() {
   const { form } = usePatientForm();
-
-  // Define billing types exactly as they exist in the backend enum
   const billingTypes = ['General', 'Insurance', 'Corporate', 'Cash'];
 
   return (
     <PatientFormStep
-      title="8.Billing Information"
+      title="8. Billing Information"
       description="Patient billing and referral details"
     >
       <div className="grid md:grid-cols-3 gap-4">
-        {/* Billing Type (Required) */}
+        {/* Correct path: billingReferral.billingType */}
         <FormField
           control={form.control}
-          name="billing.billingType"
+          name="billingReferral.billingType"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Billing Type</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                onValueChange={(val) => field.onChange(val || null)}
+                value={field.value || undefined}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select billing type" />
@@ -55,15 +56,18 @@ export function BillingStep() {
           )}
         />
 
-        {/* Referred By (Optional) */}
+        {/* Correct path: billingReferral.referredBy */}
         <FormField
           control={form.control}
-          name="billingReferral"
+          name="billingReferral.referredBy"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Referred By (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter referring person or source" {...field} />
+                <Input
+                  placeholder="Enter referring person or source"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -31,14 +31,14 @@ export function EmergencyContactsStep() {
     'Parent',
     'Child',
     'Sibling',
-    'Friend',
+    'Guardian',
     'Other',
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">5.Emergency Contacts</h2>
+        <h2 className="text-lg font-semibold">5. Emergency Contacts</h2>
         <Button
           type="button"
           variant="outline"
@@ -78,7 +78,6 @@ export function EmergencyContactsStep() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Full Name */}
             <FormField
               control={form.control}
               name={`emergencyContacts.${index}.contactName`}
@@ -86,14 +85,17 @@ export function EmergencyContactsStep() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter full name" {...field} />
+                    <Input
+                      placeholder="Enter full name"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value || null)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Relationship */}
             <FormField
               control={form.control}
               name={`emergencyContacts.${index}.relationship`}
@@ -101,8 +103,8 @@ export function EmergencyContactsStep() {
                 <FormItem>
                   <FormLabel>Relationship</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(val) => field.onChange(val || null)}
+                    value={field.value || undefined}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -122,7 +124,6 @@ export function EmergencyContactsStep() {
               )}
             />
 
-            {/* Phone Number */}
             <FormField
               control={form.control}
               name={`emergencyContacts.${index}.phoneNumber`}
@@ -130,7 +131,11 @@ export function EmergencyContactsStep() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter phone number" {...field} />
+                    <Input
+                      placeholder="Enter phone number"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value || null)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

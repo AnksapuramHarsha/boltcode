@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
-
+import { format } from 'date-fns';
+import { PatientFormProvider } from './patient-form-context';
 import { AbhaDetailsStep } from './form-steps/abha-details';
 import { PersonalDetailsStep } from './form-steps/personal-details';
 import { ContactInformationStep } from './form-steps/contact-information';
@@ -12,8 +13,6 @@ import { EmergencyContactsStep } from './form-steps/emergency-contacts';
 import { InsuranceDetailsStep } from './form-steps/insurance-details';
 import { ConsentStep } from './form-steps/consent';
 import { BillingStep } from './form-steps/billing';
-import { format } from 'date-fns';
-import { PatientFormProvider } from './patient-form-context';
 
 type PatientFormProps = {
   onSubmit: (data: any) => void;
@@ -24,139 +23,237 @@ export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
- const form = useForm({
-  defaultValues: {
-    title: '',
-    facilityId: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: new Date(),
-    gender: 'male',
-    bloodGroup: 'A+',
-    maritalStatus: 'Single',
-    citizenship: 'Indian',
-    religion: '',
-    isActive: true,
-    isDeceased: false,
-    address: {
-      addressType: 'Permanent',
-      houseNoOrFlatNo: '',
-      localityOrSector: '',
-      cityOrVillage: '',
-      city: '',
-      districtId: '',
-      stateId: '',
-      country: 'India',
-      pincode: '',
-    },
-    govtIdType: 'aadhar',
-    govtIdValue: '',
-    emergencyContacts: [{ contactName: '', phoneNumber: '', relationship: '' }],
-    informationSharing: {
-      shareWithSpouse: false,
-      shareWithChildren: false,
-      shareWithCaregiver: false,
-      shareWithOther: false,
-      shareWithOtherDetails: '',
-    },
-    billing: {
-      billingType: 'General',
-    },
-    insurance: {
-      insuranceProvider: '',
-      policyNumber: '',
-      policyStartDate: '',
-      policyEndDate: '',
-      coverageAmount: '',
-    },
-    documents: {
-      idProof: null,
-      addressProof: null,
-      medicalRecords: [],
-    },
-    dynamic: {
-      abhaNumber: '',
-      abhaAddress: '',
-      verificationMethod: '',
-      verificationStatus: '',
-    },
-    contacts: [
-      {
-        mobileNumber: '',
-        phoneNumber: '',
-        email: '',
-        preferredContactMode: 'Phone',
-        phoneContactPreference: null,
-        consentToShare: false,
+  const form = useForm({
+    defaultValues: {
+      title: null,
+      facilityId: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      dateOfBirth: new Date(),
+      gender: null,
+      bloodGroup: null,
+      maritalStatus: 'Single',
+      citizenship: 'Indian',
+      religion: '',
+      caste: '',
+      occupation: '',
+      education: '',
+      annualIncome: '',
+      identifierType: null,
+      identifierNumber: '',
+      address: {
+        addressType: 'Permanent',
+        houseNoOrFlatNo: '',
+        localityOrSector: '',
+        cityOrVillage: '',
+        city: '',
+        districtId: '',
+        stateId: '',
+        country: 'India',
+        pincode: '',
       },
-    ],
-  },
-});
-useEffect(() => {
-  if (initialValues) {
-    form.reset({
-      ...initialValues,
-      dateOfBirth: initialValues.dateOfBirth ? new Date(initialValues.dateOfBirth) : new Date(),
-      address: initialValues.addresses?.[0] || {},
-      insurance: {
-        ...initialValues.insurance,
-        policyStartDate: initialValues.insurance?.policyStartDate
-          ? new Date(initialValues.insurance.policyStartDate)
-          : '',
-        policyEndDate: initialValues.insurance?.policyEndDate
-          ? new Date(initialValues.insurance.policyEndDate)
-          : '',
-      },
-      billing: {
-        ...initialValues.billing,
-        billingType: initialValues.billingReferral?.billingType || 'General',
-      },
-      billingReferral: initialValues.billingReferral?.referredBy || '',
-      contacts: initialValues.contacts || [
+      contacts: [
         {
-          mobileNumber: initialValues.contactInformation?.mobileNumber || '',
+          mobileNumber: null,
           phoneNumber: '',
-          email: initialValues.contactInformation?.emailId || '',
-          preferredContactMode: initialValues.contactInformation?.preferredContactMode || 'Phone',
+          email: null,
+          preferredContactMode: 'Phone',
           phoneContactPreference: null,
-          consentToShare: initialValues.contactInformation?.consentToShare || false,
+          consentToShare: false,
         },
       ],
-    });
-  }
-}, [initialValues, form]);
+      emergencyContacts: [],
+      insurance: {
+        insuranceProvider: '',
+        policyNumber: '',
+        policyStartDate: '',
+        policyEndDate: '',
+        coverageAmount: 0,
+      },
+   billingReferral: {
+  billingType: 'General',
+  referredBy: '',
+},
 
 
+      informationSharing: {
+        shareWithSpouse: false,
+        shareWithChildren: false,
+        shareWithCaregiver: false,
+        shareWithOther: false
+      },
+      dynamic: {
+        abhaNumber: '',
+        abhaAddress: '',
+        verificationMethod: '',
+        verificationStatus: '',
+      },
+    },
+  });
+
+  useEffect(() => {
+    console.log("initial valuessss", initialValues);
+    if (initialValues) {
+      form.reset({
+        ...initialValues,
+        facilityId: initialValues.facilityId || 'cB12Cb43-D178-1a37-6CEf-Ccaa39e6969a',
+        dateOfBirth: initialValues.dateOfBirth ? new Date(initialValues.dateOfBirth) : new Date(),
+        address: initialValues.addresses?.[0] || {
+          addressType: 'Permanent',
+          houseNoOrFlatNo: '',
+          localityOrSector: '',
+          cityOrVillage: '',
+          city: '',
+          districtId: '',
+          stateId: '',
+          country: 'India',
+          pincode: '',
+        },
+        insurance: {
+          insuranceProvider: initialValues.insurance?.insuranceProvider || '',
+          policyNumber: initialValues.insurance?.policyNumber || '',
+          policyStartDate: initialValues.insurance?.policyStartDate ? new Date(initialValues.insurance.policyStartDate) : '',
+          policyEndDate: initialValues.insurance?.policyEndDate ? new Date(initialValues.insurance.policyEndDate) : '',
+          coverageAmount: initialValues.insurance?.coverageAmount || 0,
+        },
+billingReferral: {
+  billingType:
+    initialValues.billingReferral && initialValues.billingReferral.billingType
+      ? initialValues.billingReferral.billingType
+      : 'General',
+  referredBy:
+    initialValues.billingReferral && initialValues.billingReferral.referredBy
+      ? initialValues.billingReferral.referredBy
+      : '',
+},
+
+
+
+
+
+        contacts: initialValues.contacts?.map((c: any) => ({
+          mobileNumber: c.mobileNumber || '',
+          phoneNumber: c.phoneNumber || '',
+          email: c.email || null,
+          preferredContactMode: c.preferredContactMode || null,
+          phoneContactPreference: c.phoneContactPreference || null,
+          consentToShare: !!c.consentToShare,
+        })) || [
+            {
+              mobileNumber: null,
+              phoneNumber: '',
+              email: null,
+              preferredContactMode: 'Phone',
+              phoneContactPreference: null,
+              consentToShare: false,
+            },
+          ],
+        emergencyContacts: initialValues.emergencyContacts?.map((c: any) => ({
+          contactName: c.contactName || '',
+          relationship: c.relationship || '',
+          phoneNumber: c.phoneNumber || '',
+        })) || [],
+        informationSharing: {
+          shareWithSpouse: initialValues.informationSharing?.shareWithSpouse,
+          shareWithChildren: initialValues.informationSharing?.shareWithChildren,
+          shareWithCaregiver: initialValues.informationSharing?.shareWithCaregiver,
+          shareWithOther: initialValues.informationSharing?.shareWithOther
+        },
+        dynamic: {
+          abhaNumber: initialValues.dynamic?.abhaNumber || '',
+          abhaAddress: initialValues.dynamic?.abhaAddress || '',
+          verificationMethod: initialValues.dynamic?.verificationMethod || '',
+          verificationStatus: initialValues.dynamic?.verificationStatus || '',
+        },
+        caste: initialValues.caste || '',
+        religion: initialValues.religion || '',
+        occupation: initialValues.occupation || '',
+        education: initialValues.education || '',
+        annualIncome: initialValues.annualIncome || '',
+      });
+    }
+  }, [initialValues, form]);
 
   const handleSubmit = async (data: any) => {
-    console.log('data before formatting ---------------------', data);
+    console.log('🧾 Raw form data before formatting:', data);
+
     setIsSubmitting(true);
 
+    const findUndefinedFields = (obj: any, path = '') => {
+      Object.entries(obj).forEach(([key, value]) => {
+        const currentPath = path ? `${path}.${key}` : key;
+
+        if (value === undefined) {
+          console.warn(`❌ Uncontrolled input: ${currentPath} is undefined`);
+        } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          findUndefinedFields(value, currentPath);
+        } else if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            if (typeof item === 'object' && item !== null) {
+              findUndefinedFields(item, `${currentPath}[${index}]`);
+            } else if (item === undefined) {
+              console.warn(`❌ Uncontrolled input: ${currentPath}[${index}] is undefined`);
+            }
+          });
+        }
+      });
+    };
+
+    findUndefinedFields(data);
+    console.log("dataaaaa", data);
     try {
       const formattedData = {
         ...data,
-        dateOfBirth: data.dateOfBirth
-          ? format(new Date(data.dateOfBirth), 'yyyy-MM-dd')
-          : null,
+        facilityId: data.facilityId || 'cB12Cb43-D178-1a37-6CEf-Ccaa39e6969a',
+        dateOfBirth: data.dateOfBirth ? format(new Date(data.dateOfBirth), 'yyyy-MM-dd') : null,
         insurance: {
           ...data.insurance,
-          policyStartDate: data.insurance.policyStartDate
-            ? format(new Date(data.insurance.policyStartDate), 'yyyy-MM-dd')
-            : null,
-          policyEndDate: data.insurance.policyEndDate
-            ? format(new Date(data.insurance.policyEndDate), 'yyyy-MM-dd')
-            : null,
+          policyStartDate: data.insurance.policyStartDate ? format(new Date(data.insurance.policyStartDate), 'yyyy-MM-dd') : null,
+          policyEndDate: data.insurance.policyEndDate ? format(new Date(data.insurance.policyEndDate), 'yyyy-MM-dd') : null,
+          coverageAmount: Number(data.insurance.coverageAmount) || 0,
         },
         addresses: [data.address],
         billingReferral: {
-          billingType: data.billing.billingType,
-          referredBy: data.billingReferral || null,
+          billingType: data.billingReferral?.billingType || 'General',
+          referredBy: data.billingReferral?.referredBy || null,
         },
+
+
+        informationSharing: {
+          shareWithSpouse: data.informationSharing?.shareWithSpouse,
+          shareWithChildren: data.informationSharing?.shareWithChildren,
+          shareWithCaregiver: data.informationSharing?.shareWithCaregiver,
+          shareWithOther:data.informationSharing?.shareWithOther,
+        },
+
+
+
+        contacts: data.contacts.map((c: any) => ({
+          ...c,
+          preferredContactMode: c.preferredContactMode || null,
+          phoneContactPreference: c.phoneContactPreference || null,
+          mobileNumber: c.mobileNumber || null,
+          email: c.email || null,
+        })),
+        dynamic: {
+          ...data.dynamic,
+          abhaNumber: data.dynamic.abhaNumber || null,
+          abhaAddress: data.dynamic.abhaAddress || null,
+        },
+        caste: data.caste || null,
+        religion: data.religion || null,
+        occupation: data.occupation || null,
+        education: data.education || null,
+        annualIncome: data.annualIncome || null,
+
+
+
       };
 
-      delete formattedData.address;
 
+      // delete formattedData.address;
+      console.log("formated dataaa",formattedData)
       await onSubmit(formattedData);
     } finally {
       setIsSubmitting(false);
@@ -170,45 +267,14 @@ useEffect(() => {
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-8">
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">ABHA Details</h3> */}
-                  <AbhaDetailsStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Personal Details</h3> */}
-                  <PersonalDetailsStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Contact Information</h3> */}
-                  <ContactInformationStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Address Details</h3> */}
-                  <AddressDetailsStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Emergency Contacts</h3> */}
-                  <EmergencyContactsStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Insurance Details</h3> */}
-                  <InsuranceDetailsStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Consent Information</h3> */}
-                  <ConsentStep />
-                </div>
-
-                <div className="space-y-4">
-                  {/* <h3 className="text-lg font-medium">Billing Information</h3> */}
-                  <BillingStep />
-                </div>
+                <AbhaDetailsStep />
+                <PersonalDetailsStep />
+                <ContactInformationStep />
+                <AddressDetailsStep />
+                <EmergencyContactsStep />
+                <InsuranceDetailsStep />
+                <ConsentStep />
+                <BillingStep />
               </div>
             </CardContent>
           </Card>
@@ -220,8 +286,8 @@ useEffect(() => {
                   ? 'Updating...'
                   : 'Update Patient'
                 : isSubmitting
-                ? 'Registering...'
-                : 'Register Patient'}
+                  ? 'Registering...'
+                  : 'Register Patient'}
             </Button>
           </div>
         </form>

@@ -19,17 +19,14 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 export function ContactInformationStep() {
-  const { form, currentStep } = usePatientForm();
+  const { form } = usePatientForm();
 
   return (
     <PatientFormStep
       title="3. Contact Information"
       description="Contact details and preferences"
-      // currentStep={currentStep}
-      // totalSteps={5}
     >
-      <div className="space-y-6  ">
-
+      <div className="space-y-6">
         {/* Contact fields grid */}
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -39,7 +36,12 @@ export function ContactInformationStep() {
               <FormItem>
                 <FormLabel>Mobile Number</FormLabel>
                 <FormControl>
-                  <Input type="tel" {...field} placeholder="Enter mobile number" />
+                  <Input
+                    type="tel"
+                    {...field}
+                    placeholder="Enter mobile number"
+                    onChange={(e) => field.onChange(e.target.value || null)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -51,9 +53,15 @@ export function ContactInformationStep() {
             name="contacts[0].phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number<span className="text-red-500">*</span></FormLabel>
+                <FormLabel>
+                  Phone Number<span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
-                  <Input type="tel" {...field} placeholder="Enter phone number" />
+                  <Input
+                    type="tel"
+                    {...field}
+                    placeholder="Enter phone number"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,7 +77,12 @@ export function ContactInformationStep() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" {...field} placeholder="Enter email" />
+                  <Input
+                    type="email"
+                    {...field}
+                    placeholder="Enter email"
+                    onChange={(e) => field.onChange(e.target.value || null)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -82,7 +95,10 @@ export function ContactInformationStep() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Preferred Contact Mode</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={(val) => field.onChange(val || null)}
+                  value={field.value ?? undefined}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select mode" />
@@ -92,7 +108,6 @@ export function ContactInformationStep() {
                     <SelectItem value="Phone">Phone</SelectItem>
                     <SelectItem value="Email">Email</SelectItem>
                     <SelectItem value="None">None</SelectItem>
-                
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -108,7 +123,10 @@ export function ContactInformationStep() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone Contact Preference</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={(val) => field.onChange(val || null)}
+                  value={field.value ?? undefined}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select preference" />

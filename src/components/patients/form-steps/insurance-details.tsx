@@ -1,7 +1,6 @@
 import React from 'react';
-import { usePatientForm } from '../patient-form-context';
 import { PatientFormStep } from '../patient-form-step';
-import { format } from 'date-fns';
+import { usePatientForm } from '../patient-form-context';
 import {
   FormField,
   FormItem,
@@ -17,7 +16,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar'; // your custom calendar component
+import { Calendar } from '@/components/ui/calendar';
 import { mockData } from '@/lib/mock-data';
 
 export function InsuranceDetailsStep() {
@@ -25,7 +24,7 @@ export function InsuranceDetailsStep() {
 
   return (
     <PatientFormStep
-      title="6.Insurance Details"
+      title="6. Insurance Details"
       description="Patient's insurance information"
     >
       <div className="grid md:grid-cols-3 gap-4">
@@ -36,7 +35,10 @@ export function InsuranceDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Insurance Provider</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                onValueChange={(val) => field.onChange(val || null)}
+                value={field.value || undefined}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select provider" />
@@ -63,7 +65,11 @@ export function InsuranceDetailsStep() {
             <FormItem>
               <FormLabel>Policy Number</FormLabel>
               <FormControl>
-                <Input placeholder="Enter policy number" {...field} />
+                <Input
+                  placeholder="Enter policy number"
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.value || null)}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -82,7 +88,9 @@ export function InsuranceDetailsStep() {
                   type="number"
                   placeholder="Enter amount"
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  onChange={(e) =>
+                    field.onChange(e.target.value ? Number(e.target.value) : 0)
+                  }
                 />
               </FormControl>
               <FormMessage />

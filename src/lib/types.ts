@@ -15,193 +15,103 @@ export interface User {
 }
 
 export interface Patient {
-  id: string;
+  id?: string;
   userId: string;
-  title: string;
+  title: 'Mr' | 'Mrs' | 'Ms' | 'Dr' | 'Master' | 'Miss' | 'Other';
   firstName: string;
   lastName: string;
   middleName?: string;
-  dateOfBirth: Date;
-  gender: 'male' | 'female' | 'other';
-  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  maritalStatus: 'Single' | 'Married' | 'Divorced' | 'Widowed';
-  status: 'active' | 'deceased';
-  age: {
+  gender: 'Male' | 'Female' | 'Other';
+  dateOfBirth: string;
+  age?: {
     years: number;
     months: number;
     days: number;
   };
-  contactInformation: {
-    email: string;
-    phone: string;
-    alternatePhone?: string;
-    preferredContactMode: 'phone' | 'email' | 'sms' | 'whatsapp';
-    preferredLanguage: 'english' | 'hindi' | 'khasi';
-  };
-  address: {
-    houseNumber: string;
-    flatNumber?: string;
-    locality: string;
-    sector?: string;
-    line1: string;
-    line2?: string;
-    city: string;
-    district: string;
-    state: string;
-    country: string;
-    pinCode: string;
-  };
-  permanentAddress?: {
-    houseNumber: string;
-    flatNumber?: string;
-    locality: string;
-    sector?: string;
-    line1: string;
-    line2?: string;
-    city: string;
-    district: string;
-    state: string;
-    country: string;
-    pinCode: string;
-  };
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  maritalStatus: 'Single' | 'Married' | 'Divorced' | 'Widowed';
+  citizenship?: string;
+  religion?: string;
+  caste?: string;
+  occupation?: string;
+  education?: string;
+  annualIncome?: string;
+  identifierType: 'ABHA' | 'Aadhar' | 'Passport' | 'Driving_License' | 'PAN';
+  identifierNumber: string;
+
+  // Address is expected as an array
+  addresses: Array<{
+    addressType: 'Present' | 'Permanent';
+    houseNoOrFlatNo?: string;
+    localityOrSector?: string;
+    cityOrVillage?: string;
+    districtId?: string;
+    stateId?: string;
+    country?: string;
+    pincode?: string;
+  }>;
+
+  // ABHA details
   abhaDetails?: {
-    abhaNumber: string;
-    abhaAddress: string;
-    verificationStatus: 'verified' | 'pending' | 'failed';
+    abhaNumber?: string;
+    abhaAddress?: string;
+    verificationStatus?: string;
     verificationMethod?: string;
-    verificationDate?: Date;
-    verificationSource?: string;
   };
-  insurance: {
-    provider: string;
-    policyNumber: string;
-    startDate: Date;
-    endDate: Date;
-    coverageAmount: number;
-    status: 'active' | 'expired' | 'cancelled';
-    documents?: Array<{
-      type: string;
-      url: string;
-      uploadedAt: Date;
-    }>;
-  };
+
+  // Contact Info
+  contacts: Array<{
+    mobileNumber?: string;
+    phoneNumber: string;
+    email?: string;
+    preferredContactMode?: 'Phone' | 'Email' | 'None';
+    phoneContactPreference?: 'Call' | 'SMS' | 'WhatsApp';
+    consentToShare: boolean;
+  }>;
+
+  // Emergency
   emergencyContacts: Array<{
-    relationshipType: string;
-    name: string;
-    phone: string;
-    alternatePhone?: string;
-    address?: string;
+    contactName: string;
+    relationship: string;
+    phoneNumber: string;
   }>;
-  demographics: {
-    citizenship: string;
-    religion: string;
-    caste?: string;
-    occupation?: string;
-    education?: string;
-    annualIncome?: string;
-    language: string[];
+
+  // Insurance
+  insurance: {
+    insuranceProvider: string;
+    policyNumber: string;
+    policyStartDate: string;
+    policyEndDate: string;
+    coverageAmount: number;
   };
-  medicalInformation: {
-    allergies: string[];
-    chronicConditions: string[];
-    currentMedications: string[];
-    familyHistory: string[];
-    lifestyle: {
-      smoking: boolean;
-      alcohol: boolean;
-      exercise: string;
-      diet: string;
-    };
-  };
-  registrationDetails: {
-    registeredBy: string;
-    registrationType: 'walk-in' | 'referral' | 'emergency' | 'transfer' | 'online';
-    registrationSource: string;
-    registrationNumber: string;
-    registrationDate: Date;
-    registrationStatus: 'completed' | 'pending' | 'cancelled';
-    verificationStatus: 'verified' | 'pending' | 'failed';
-    documents: Array<{
-      type: string;
-      number: string;
-      issuedBy: string;
-      issuedDate: Date;
-      validUntil?: Date;
-      url: string;
-    }>;
-  };
+
+  // Billing
   billing: {
-    type: string;
-    category: string;
+    billingType: 'General' | 'Insurance' | 'Corporate' | 'Cash';
+  };
+  billingReferral: {
     referredBy?: string;
-    creditLimit?: number;
-    defaultPaymentMethod?: string;
+    billingType: string;
   };
-  consent: {
-    informationSharing: {
-      spouse: boolean;
-      children: boolean;
-      caregiver: boolean;
-      other: boolean;
-      otherDetails?: string;
-    };
-    mobileSharing: boolean;
-    emailNotifications: boolean;
-    smsNotifications: boolean;
-    marketingCommunications: boolean;
+
+  // Consent
+  informationSharing: {
+    shareWithSpouse: boolean;
+    shareWithChildren: boolean;
+    shareWithCaregiver: boolean;
+    shareWithOther: boolean;
+    shareWithOtherDetails?: string;
   };
-  visits: Array<{
-    id: string;
-    date: Date;
-    type: string;
-    doctorId: string;
-    doctorName: string;
-    department: string;
-    chiefComplaints: string[];
-    diagnosis?: string;
-    treatment?: string;
-    followUp?: Date;
-    status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
-  }>;
-  vitalSigns: Array<{
-    date: Date;
-    bloodPressure: string;
-    heartRate: number;
-    temperature: number;
-    respiratoryRate: number;
-    oxygenSaturation: number;
-    weight: number;
-    height: number;
-    bmi: number;
-    notes?: string;
-    recordedBy: string;
-  }>;
-  documents: Array<{
-    id: string;
-    type: 'identification' | 'insurance' | 'medical' | 'prescription' | 'lab_report' | 'other';
-    name: string;
-    url: string;
-    uploadedAt: Date;
-    uploadedBy: string;
-    category: string;
-    tags: string[];
-    description?: string;
-    size: number;
-    format: string;
-  }>;
-  auditTrail: Array<{
-    action: string;
-    performedBy: string;
-    performedAt: Date;
-    details: string;
-    ipAddress: string;
-    userAgent: string;
-  }>;
-  lastVisit?: Date;
-  nextAppointment?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+
+  // Meta
+  registrationDetails?: {
+    registrationNumber: string;
+  };
+
+  createdAt?: string;
+  updatedAt?: string;
 }
+
 
 export interface Doctor {
   id: string;

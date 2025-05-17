@@ -46,7 +46,7 @@ export function PatientList({
                 <div className="flex items-center gap-3">
                   <Avatar>
                     <AvatarImage
-                      src={`https://randomuser.me/api/portraits/${patient.gender === 'male' ? 'men' : 'women'}/${parseInt(patient.id.split('-')[1])}.jpg`}
+                      src={`https://randomuser.me/api/portraits/${patient.gender.toLowerCase() === 'male' ? 'men' : 'women'}/${parseInt(patient.id.split('-')[1])}.jpg`}
                       alt={patient.userId}
                     />
                     <AvatarFallback>{patient.userId.substring(0, 2)}</AvatarFallback>
@@ -54,27 +54,29 @@ export function PatientList({
                   <div>
                     <div className="font-medium">{patient.userId}</div>
                     <div className="text-sm text-muted-foreground">
-                      {`${patient?.address.houseNumber}, ${patient?.address.city}`}
+                      {`${patient.addresses?.[0]?.houseNoOrFlatNo || ''}, ${patient.addresses?.[0]?.cityOrVillage || ''}`}
                     </div>
-
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{patient.registrationDetails.registrationNumber}</TableCell>
-              <TableCell>{patient.contactInformation.phone}</TableCell>
-              <TableCell>{patient?.abhaDetails?.abhaNumber}</TableCell>
+              <TableCell>{patient.registrationDetails?.registrationNumber || '—'}</TableCell>
+              {/* <TableCell>{patient.contactInformation?.phone || '—'}</TableCell> */}
+              <TableCell>{patient.abhaDetails?.abhaNumber || '—'}</TableCell>
               <TableCell>
-                <Badge variant="outline">{patient.billing.type}</Badge>
+                <Badge variant="outline">{patient.billing?.billingType || '—'}</Badge>
               </TableCell>
               <TableCell>
                 <div className="text-sm">
-                  {patient?.emergencyContacts?.map((contact, index) => (
-                    <div key={index} className="mb-2">
-                      <div>{contact.name}</div>
-                      <div className="text-muted-foreground">{contact.phone}</div>
-                    </div>
-                  ))}
-
+                  {patient?.emergencyContacts?.length ? (
+                    patient.emergencyContacts.map((contact, index) => (
+                      <div key={index} className="mb-2">
+                        <div>{contact.contactName}</div>
+                        <div className="text-muted-foreground">{contact.phoneNumber}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-muted-foreground">None</div>
+                  )}
                 </div>
               </TableCell>
               <TableCell>

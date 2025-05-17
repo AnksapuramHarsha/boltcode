@@ -17,7 +17,7 @@ export function ConsentStep() {
 
   return (
     <PatientFormStep
-      title="7.Consent Information"
+      title="7. Consent Information"
       description="Information sharing preferences"
     >
       <div className="space-y-6">
@@ -31,7 +31,10 @@ export function ConsentStep() {
               render={({ field }) => (
                 <FormItem className="flex items-center space-x-3 rounded-md border p-4 shadow-sm">
                   <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                   <FormLabel className="text-sm font-medium">Share with Spouse</FormLabel>
                   <FormMessage />
@@ -46,7 +49,10 @@ export function ConsentStep() {
               render={({ field }) => (
                 <FormItem className="flex items-center space-x-3 rounded-md border p-4 shadow-sm">
                   <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                   <FormLabel className="text-sm font-medium">Share with Children</FormLabel>
                   <FormMessage />
@@ -61,7 +67,10 @@ export function ConsentStep() {
               render={({ field }) => (
                 <FormItem className="flex items-center space-x-3 rounded-md border p-4 shadow-sm">
                   <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                   <FormLabel className="text-sm font-medium">Share with Caregiver</FormLabel>
                   <FormMessage />
@@ -76,7 +85,10 @@ export function ConsentStep() {
               render={({ field }) => (
                 <FormItem className="flex items-center space-x-3 rounded-md border p-4 shadow-sm">
                   <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                   <FormLabel className="text-sm font-medium">Share with Others</FormLabel>
                   <FormMessage />
@@ -85,7 +97,7 @@ export function ConsentStep() {
             />
           </div>
 
-          {/* Optional: Specify Other (conditional) */}
+          {/* Specify Other (Optional, visible only if checkbox is true) */}
           {shareWithOther && (
             <FormField
               control={form.control}
@@ -96,7 +108,11 @@ export function ConsentStep() {
                     Specify Other Person/Relationship
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter details" {...field} />
+                    <Input
+                      placeholder="Enter details"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value || null)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
