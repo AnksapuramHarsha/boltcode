@@ -31,10 +31,29 @@ export function ContactInformationStep() {
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
+            name="contacts[0].phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                 Primary Phone Number<span className="text-red-500">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="tel"
+                    {...field}
+                    placeholder="Enter phone number"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="contacts[0].mobileNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mobile Number</FormLabel>
+                <FormLabel>Secondary Phone Number</FormLabel>
                 <FormControl>
                   <Input
                     type="tel"
@@ -48,25 +67,7 @@ export function ContactInformationStep() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="contacts[0].phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Phone Number<span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="tel"
-                    {...field}
-                    placeholder="Enter phone number"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          
         </div>
 
         <div className="grid grid-cols-2 gap-4">

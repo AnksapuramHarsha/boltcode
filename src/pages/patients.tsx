@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import axios from 'axios';
 import { apiUrl } from '../utils/api';
-
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal';
 import {
   Select,
   SelectContent,
@@ -45,7 +45,8 @@ export default function Patients() {
   const [loading, setLoading] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editingPatient, setEditingPatient] = React.useState<any | null>(null);
-
+  const [showModal, setShowModal] = React.useState(false);
+  const [selectedPatientId, setSelectedPatientId] = React.useState<string | null>(null);
   useEffect(() => {
     fetchPatients();
   }, []);
@@ -77,45 +78,60 @@ export default function Patients() {
     setEditingPatient(patient);
     setDialogOpen(true);
   };
-
- const handleFormSubmit = async (formData: any) => {
+  const confirmDelete = async () => {
+  if (!selectedPatientId) return;
   try {
-    if (editingPatient) {
-      // Update patient
-      await axios.put(
-        apiUrl(`/patients/${editingPatient.patientId}`),
-        formData
-      );
-
-      await fetchPatients(); // ✅ Ensure full fresh data after update
-
-      toast({
-        title: 'Updated',
-        description: 'Patient updated successfully',
-      });
-    } else {
-      // Create new patient
-      await axios.post(apiUrl('/patients'), formData);
-
-      await fetchPatients(); // ✅ Refresh full list after creation
-
-      toast({
-        title: 'Created',
-        description: 'New patient added successfully',
-      });
-    }
+    await axios.delete(apiUrl(`/patients/${selectedPatientId}`));
+    setPatients(prev => prev.filter(p => p.patientId !== selectedPatientId));
+    toast({ title: 'Deleted', description: 'Patient deleted successfully' });
   } catch (err) {
-    console.log('Error saving patient:', err);
-    toast({
-      title: 'Error',
-      description: 'Failed to save patient',
-      variant: 'destructive',
-    });
+    toast({ title: 'Error', description: 'Failed to delete patient', variant: 'destructive' });
   } finally {
-    setDialogOpen(false);
-    setEditingPatient(null);
+    setShowModal(false);
+    setSelectedPatientId(null);
   }
 };
+
+
+
+  const handleFormSubmit = async (formData: any) => {
+    try {
+      if (editingPatient) {
+        // Update patient
+        await axios.put(
+          apiUrl(`/patients/${editingPatient.patientId}`),
+          formData
+        );
+
+        await fetchPatients(); // ✅ Ensure full fresh data after update
+
+        toast({
+          title: 'Updated',
+          description: 'Patient updated successfully',
+        });
+      } else {
+        // Create new patient
+        await axios.post(apiUrl('/patients'), formData);
+
+        await fetchPatients(); // ✅ Refresh full list after creation
+
+        toast({
+          title: 'Created',
+          description: 'New patient added successfully',
+        });
+      }
+    } catch (err) {
+      console.log('Error saving patient:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to save patient',
+        variant: 'destructive',
+      });
+    } finally {
+      setDialogOpen(false);
+      setEditingPatient(null);
+    }
+  };
 
 
   const filteredPatients = React.useMemo(() => {
@@ -250,7 +266,11 @@ export default function Patients() {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(patient)}>
                       <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(patient.patientId)}>
+                    <Button variant="ghost" size="icon" onClick={() => {
+                      setSelectedPatientId(patient.patientId);
+                      setShowModal(true);
+                    }}
+                    >
                       <Trash2 className="w-4 h-4 text-red-500" />
                     </Button>
                   </TableCell>
@@ -260,6 +280,15 @@ export default function Patients() {
           </Table>
         </div>
       )}
+      <DeleteConfirmationModal
+  isOpen={showModal}
+  onClose={() => {
+    setShowModal(false);
+    setSelectedPatientId(null);
+  }}
+  onConfirm={confirmDelete}
+/>
     </div>
+    
   );
 }

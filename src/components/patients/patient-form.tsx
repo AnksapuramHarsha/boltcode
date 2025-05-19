@@ -13,6 +13,11 @@ import { EmergencyContactsStep } from './form-steps/emergency-contacts';
 import { InsuranceDetailsStep } from './form-steps/insurance-details';
 import { ConsentStep } from './form-steps/consent';
 import { BillingStep } from './form-steps/billing';
+import { useNavigate } from 'react-router-dom';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { patientSchema } from '@/schemas/patientSchema';
+
+import Patients from '@/pages/patients';
 
 type PatientFormProps = {
   onSubmit: (data: any) => void;
@@ -22,15 +27,17 @@ type PatientFormProps = {
 export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const navigate=useNavigate();
 
   const form = useForm({
+    resolver: zodResolver(patientSchema),
     defaultValues: {
       title: null,
       facilityId: '',
       firstName: '',
       middleName: '',
       lastName: '',
-      dateOfBirth: new Date(),
+      dateOfBirth: undefined,
       gender: null,
       bloodGroup: null,
       maritalStatus: 'Single',
@@ -42,7 +49,7 @@ export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
       annualIncome: '',
       identifierType: null,
       identifierNumber: '',
-      address: {
+      addresses: [{
         addressType: 'Permanent',
         houseNoOrFlatNo: '',
         localityOrSector: '',
@@ -52,7 +59,7 @@ export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
         stateId: '',
         country: 'India',
         pincode: '',
-      },
+      }],
       contacts: [
         {
           mobileNumber: null,
@@ -67,8 +74,8 @@ export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
       insurance: {
         insuranceProvider: '',
         policyNumber: '',
-        policyStartDate: '',
-        policyEndDate: '',
+        policyStartDate: undefined,
+        policyEndDate: undefined,
         coverageAmount: 0,
       },
    billingReferral: {
@@ -99,7 +106,7 @@ export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
         ...initialValues,
         facilityId: initialValues.facilityId || 'cB12Cb43-D178-1a37-6CEf-Ccaa39e6969a',
         dateOfBirth: initialValues.dateOfBirth ? new Date(initialValues.dateOfBirth) : new Date(),
-        address: initialValues.addresses?.[0] || {
+        addresses: initialValues.addresses?.[0] || [{
           addressType: 'Permanent',
           houseNoOrFlatNo: '',
           localityOrSector: '',
@@ -109,7 +116,7 @@ export function PatientForm({ onSubmit, initialValues }: PatientFormProps) {
           stateId: '',
           country: 'India',
           pincode: '',
-        },
+        }],
         insurance: {
           insuranceProvider: initialValues.insurance?.insuranceProvider || '',
           policyNumber: initialValues.insurance?.policyNumber || '',
@@ -185,7 +192,7 @@ billingReferral: {
         const currentPath = path ? `${path}.${key}` : key;
 
         if (value === undefined) {
-          console.warn(`❌ Uncontrolled input: ${currentPath} is undefined`);
+          console.warn(` Uncontrolled input: ${currentPath} is undefined`);
         } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
           findUndefinedFields(value, currentPath);
         } else if (Array.isArray(value)) {
@@ -193,7 +200,7 @@ billingReferral: {
             if (typeof item === 'object' && item !== null) {
               findUndefinedFields(item, `${currentPath}[${index}]`);
             } else if (item === undefined) {
-              console.warn(`❌ Uncontrolled input: ${currentPath}[${index}] is undefined`);
+              console.warn(` Uncontrolled input: ${currentPath}[${index}] is undefined`);
             }
           });
         }
@@ -201,7 +208,6 @@ billingReferral: {
     };
 
     findUndefinedFields(data);
-    console.log("dataaaaa", data);
     try {
       const formattedData = {
         ...data,
@@ -213,7 +219,7 @@ billingReferral: {
           policyEndDate: data.insurance.policyEndDate ? format(new Date(data.insurance.policyEndDate), 'yyyy-MM-dd') : null,
           coverageAmount: Number(data.insurance.coverageAmount) || 0,
         },
-        addresses: [data.address],
+        addresses: data.addresses,
         billingReferral: {
           billingType: data.billingReferral?.billingType || 'General',
           referredBy: data.billingReferral?.referredBy || null,
@@ -278,18 +284,28 @@ billingReferral: {
               </div>
             </CardContent>
           </Card>
+<div className="flex justify-end space-x-4">
+  <Button
+    type="button"
+    variant="outline"
+    onClick={() => 
+     { console.log("cancel button");
+      navigate('/patients',{replace:true})}}
+  >
+    Cancel
+  </Button>
+  <Button type="submit" disabled={isSubmitting}>
+    {initialValues
+      ? isSubmitting
+        ? 'Updating...'
+        : 'Update Patient'
+      : isSubmitting
+        ? 'Registering...'
+        : 'Register Patient'}
+  </Button>
+</div>
 
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isSubmitting}>
-              {initialValues
-                ? isSubmitting
-                  ? 'Updating...'
-                  : 'Update Patient'
-                : isSubmitting
-                  ? 'Registering...'
-                  : 'Register Patient'}
-            </Button>
-          </div>
+          
         </form>
       </Form>
     </PatientFormProvider>
