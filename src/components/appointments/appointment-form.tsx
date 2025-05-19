@@ -181,7 +181,7 @@ export function AppointmentForm({ onSubmit, defaultValues }: AppointmentFormProp
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
+                    {/* <Calendar
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
@@ -189,7 +189,7 @@ export function AppointmentForm({ onSubmit, defaultValues }: AppointmentFormProp
                         date < new Date() || date < new Date('1900-01-01')
                       }
                       initialFocus
-                    />
+                    /> */}
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
