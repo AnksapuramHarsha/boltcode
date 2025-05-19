@@ -19,39 +19,25 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 export function ContactInformationStep() {
-  const { form, currentStep } = usePatientForm();
+  const { form } = usePatientForm();
 
   return (
     <PatientFormStep
       title="3. Contact Information"
       description="Contact details and preferences"
-      // currentStep={currentStep}
-      // totalSteps={5}
     >
-      <div className="space-y-6  ">
+      <div className="space-y-6">
 
-        {/* Contact fields grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="contacts[0].mobileNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mobile Number</FormLabel>
-                <FormControl>
-                  <Input type="tel" {...field} placeholder="Enter mobile number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+        {/* Contact Numbers */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="contacts[0].phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number<span className="text-red-500">*</span></FormLabel>
+                <FormLabel>
+                  Phone Number<span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input type="tel" {...field} placeholder="Enter phone number" />
                 </FormControl>
@@ -59,9 +45,24 @@ export function ContactInformationStep() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="contacts[0].mobileNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Secondary Phone Number</FormLabel>
+                <FormControl>
+                  <Input type="tel" {...field} placeholder="Enter mobile number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Email and Preferred Contact Mode */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="contacts[0].email"
@@ -92,7 +93,6 @@ export function ContactInformationStep() {
                     <SelectItem value="Phone">Phone</SelectItem>
                     <SelectItem value="Email">Email</SelectItem>
                     <SelectItem value="None">None</SelectItem>
-                
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -101,7 +101,8 @@ export function ContactInformationStep() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Contact Preference and Consent */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="contacts[0].phoneContactPreference"

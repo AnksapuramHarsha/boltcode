@@ -37,27 +37,20 @@ export function AddressDetailsStep() {
     districts: false
   });
 
-  // Load all countries and initial data when component mounts
   useEffect(() => {
     const loadInitialData = async () => {
       try {
         setLoading(prev => ({ ...prev, countries: true }));
         const countriesRes = await axios.get(apiUrl('/geo/countries'));
         setCountries(countriesRes.data);
-        
-        // Get current address values from the form
+
         const address = form.getValues('address');
-        
-        // If we're in edit mode and have countryId
         if (address?.countryId) {
-          // Load states for the selected country
           setLoading(prev => ({ ...prev, states: true }));
           const statesRes = await axios.get(apiUrl(`/geo/countries/${address.countryId}/states`));
           setStates(statesRes.data);
-          
-          // If we're in edit mode and have stateId
+
           if (address?.stateId) {
-            // Load districts for the selected state
             setLoading(prev => ({ ...prev, districts: true }));
             const districtsRes = await axios.get(apiUrl(`/geo/states/${address.stateId}/districts`));
             setDistricts(districtsRes.data);
@@ -79,7 +72,6 @@ export function AddressDetailsStep() {
     loadInitialData();
   }, []);
 
-  // Watch for country changes and load corresponding states
   useEffect(() => {
     const loadStates = async () => {
       if (!selectedCountry) {
@@ -88,7 +80,7 @@ export function AddressDetailsStep() {
         form.setValue('address.districtId', '');
         return;
       }
-      
+
       try {
         setLoading(prev => ({ ...prev, states: true }));
         const response = await axios.get(apiUrl(`/geo/countries/${selectedCountry}/states`));
@@ -103,7 +95,6 @@ export function AddressDetailsStep() {
     loadStates();
   }, [selectedCountry, form]);
 
-  // Watch for state changes and load corresponding districts
   useEffect(() => {
     const loadDistricts = async () => {
       if (!selectedState) {
@@ -111,7 +102,7 @@ export function AddressDetailsStep() {
         form.setValue('address.districtId', '');
         return;
       }
-      
+
       try {
         setLoading(prev => ({ ...prev, districts: true }));
         const response = await axios.get(apiUrl(`/geo/states/${selectedState}/districts`));
@@ -131,9 +122,9 @@ export function AddressDetailsStep() {
   }
 
   return (
-    <PatientFormStep title="4.Address Details" description="Residential address of the patient">
+    <PatientFormStep title="4. Address Details" description="Residential address of the patient">
       <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="address.countryId"
@@ -143,13 +134,7 @@ export function AddressDetailsStep() {
                 <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select country">
-                        {loading.countries 
-                          ? "Loading countries..." 
-                          : field.value 
-                            ? countries.find(c => c.id === field.value)?.name || "Select country" 
-                            : "Select country"}
-                      </SelectValue>
+                      <SelectValue placeholder="Select country" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -178,13 +163,7 @@ export function AddressDetailsStep() {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select state">
-                        {loading.states 
-                          ? "Loading states..." 
-                          : field.value 
-                            ? states.find(s => s.id === field.value)?.name || "Select state" 
-                            : "Select state"}
-                      </SelectValue>
+                      <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -213,13 +192,7 @@ export function AddressDetailsStep() {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select district">
-                        {loading.districts 
-                          ? "Loading districts..." 
-                          : field.value 
-                            ? districts.find(d => d.id === field.value)?.name || "Select district" 
-                            : "Select district"}
-                      </SelectValue>
+                      <SelectValue placeholder="Select district" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -235,7 +208,6 @@ export function AddressDetailsStep() {
             )}
           />
 
-          {/* Other fields */}
           <FormField
             control={form.control}
             name="address.cityOrVillage"

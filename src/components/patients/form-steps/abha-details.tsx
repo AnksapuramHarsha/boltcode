@@ -43,16 +43,16 @@ export function AbhaDetailsStep() {
     <PatientFormStep
       title="ABHA Details"
       description="Ayushman Bharat Health Account information"
-      // currentStep={currentStep}
-      // totalSteps={8}
     >
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
+      <div className="space-y-6 w-full">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-2">
           <Button
             type="button"
             variant="outline"
             onClick={handleScan}
             disabled={scanning}
+            className="w-full sm:w-auto"
           >
             {scanning ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -67,24 +67,26 @@ export function AbhaDetailsStep() {
             onClick={() => {
               // Handle ABHA creation
             }}
+            className="w-full sm:w-auto"
           >
             Create ABHA
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* ABHA Number + Address */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="dynamic.abhaNumber"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>ABHA Number</FormLabel>
-                <div className="flex gap-2">
-                  <FormControl>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <FormControl className="flex-1">
                     <Input placeholder="XX-XXXX-XXXX-XXXX" {...field} />
                   </FormControl>
                   {field.value && (
-                    <>
+                    <div className="flex gap-2">
                       <Button
                         type="button"
                         variant="outline"
@@ -108,10 +110,9 @@ export function AbhaDetailsStep() {
                         )}
                         Verify
                       </Button>
-                    </>
+                    </div>
                   )}
                 </div>
-                {/* FormMessage kept in case you want to show runtime errors */}
                 <FormMessage />
               </FormItem>
             )}
@@ -121,7 +122,7 @@ export function AbhaDetailsStep() {
             control={form.control}
             name="dynamic.abhaAddress"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>ABHA Address</FormLabel>
                 <FormControl>
                   <Input placeholder="username@abdm" {...field} />
@@ -132,12 +133,13 @@ export function AbhaDetailsStep() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Verification Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="dynamic.verificationMethod"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Verification Method</FormLabel>
                 <FormControl>
                   <Input {...field} readOnly />
@@ -146,12 +148,11 @@ export function AbhaDetailsStep() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="dynamic.verificationStatus"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Verification Status</FormLabel>
                 <FormControl>
                   <Input {...field} readOnly />

@@ -17,7 +17,6 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
-import { mockData } from '@/lib/mock-data';
 
 export function PersonalDetailsStep() {
   const { form } = usePatientForm();
@@ -26,8 +25,9 @@ export function PersonalDetailsStep() {
   return (
     <PatientFormStep title="1. Basic Info" description="">
       <div className="space-y-6">
+
         {/* Basic Info Grid */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {/* Title */}
           <FormField
             control={form.control}
@@ -106,7 +106,7 @@ export function PersonalDetailsStep() {
         </div>
 
         {/* DOB & Gender */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {/* Date of Birth */}
           <FormField
             control={form.control}
@@ -155,30 +155,11 @@ export function PersonalDetailsStep() {
           />
         </div>
 
-        {/* Email */}
-        <div className="grid grid-cols-3 gap-4">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Email ID<span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Enter" type="email" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <hr className="my-4" />
         <h2 className="text-lg font-semibold">2. Additional Patient Information</h2>
 
         {/* Citizenship & Religion */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="citizenship"
@@ -206,7 +187,7 @@ export function PersonalDetailsStep() {
         </div>
 
         {/* Caste & Occupation */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="caste"
@@ -234,7 +215,7 @@ export function PersonalDetailsStep() {
         </div>
 
         {/* Education & Income */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="education"
@@ -262,7 +243,7 @@ export function PersonalDetailsStep() {
         </div>
 
         {/* ID Type & Number */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="identifierType"
